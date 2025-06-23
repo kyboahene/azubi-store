@@ -1,13 +1,14 @@
+"use client";
+
 import { createContext, useReducer, ReactNode, useEffect } from 'react';
 
 // Cart item type
 export type CartItem = {
-  id: string;
+  id: number;
   name: string;
+  image: string;
   price: number;
-  salePrice?: number;
   quantity: number;
-  selectedOptions?: Record<string, string>;
 };
 
 // Cart state type
@@ -22,8 +23,8 @@ type CartAction =
   | { type: 'OPEN_CART' }
   | { type: 'CLOSE_CART' }
   | { type: 'ADD_TO_CART'; payload: CartItem }
-  | { type: 'UPDATE_CART_ITEM'; payload: { id: string; quantity: number; selectedOptions?: Record<string, string> } }
-  | { type: 'REMOVE_FROM_CART'; payload: { id: string; selectedOptions?: Record<string, string> } }
+  | { type: 'UPDATE_CART_ITEM'; payload: { id: string; quantity: number } }
+  | { type: 'REMOVE_FROM_CART'; payload: { id: string } }
   | { type: 'CLEAR_CART' };
 
 const initialState: CartState = {
@@ -35,8 +36,7 @@ const initialState: CartState = {
 // Calculate cart subtotal
 const calculateSubtotal = (items: CartItem[]): number => {
   return items.reduce((total, item) => {
-    const itemPrice = item.salePrice || item.price;
-    return total + itemPrice * item.quantity;
+    return total + item.price * item.quantity;
   }, 0);
 };
 
@@ -71,8 +71,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       
       // Check if item already exists in cart
       const existingItemIndex = items.findIndex(
-        (item) => item.id === newItem.id && 
-                  JSON.stringify(item.selectedOptions) === JSON.stringify(newItem.selectedOptions)
+        (item) => item.id === newItem.id
       );
       
       let updatedItems;
@@ -101,19 +100,13 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     }
 
     case 'UPDATE_CART_ITEM': {
-      const { id, quantity, selectedOptions } = action.payload;
-      
+      const { id, quantity } = action.payload;
       const updatedItems = state.items.map(item => {
-        const matchesId = item.id === id;
-        const matchesOptions = !selectedOptions || 
-          JSON.stringify(item.selectedOptions) === JSON.stringify(selectedOptions);
-        
-        if (matchesId && matchesOptions) {
+        if (item.id === Number(id)) {
           return { ...item, quantity };
         }
         return item;
       });
-      
       return {
         ...state,
         items: updatedItems,
@@ -122,16 +115,8 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     }
 
     case 'REMOVE_FROM_CART': {
-      const { id, selectedOptions } = action.payload;
-      
-      const updatedItems = state.items.filter(item => {
-        const matchesId = item.id === id;
-        const matchesOptions = !selectedOptions || 
-          JSON.stringify(item.selectedOptions) === JSON.stringify(selectedOptions);
-        
-        return !(matchesId && matchesOptions);
-      });
-      
+      const { id } = action.payload;
+      const updatedItems = state.items.filter(item => item.id !== Number(id));
       return {
         ...state,
         items: updatedItems,
