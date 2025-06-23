@@ -20,20 +20,20 @@ export function useCart() {
   );
 
   const updateCartItem = useCallback(
-    (id: string, quantity: number, selectedOptions?: Record<string, string>) => {
+    (id: string, quantity: number) => {
       dispatch({
         type: 'UPDATE_CART_ITEM',
-        payload: { id, quantity, selectedOptions },
+        payload: { id, quantity },
       });
     },
     [dispatch]
   );
 
   const removeFromCart = useCallback(
-    (id: string, selectedOptions?: Record<string, string>) => {
+    (id: string) => {
       dispatch({
         type: 'REMOVE_FROM_CART',
-        payload: { id, selectedOptions },
+        payload: { id },
       });
     },
     [dispatch]
