@@ -35,7 +35,6 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Mobile Menu Button */}
          <div className="flex items-center gap-6">
            <button
             className="p-2 md:hidden"
@@ -45,7 +44,6 @@ export function Navbar() {
             {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
 
-          {/* Logo */}
           <Link
             href="/"
             className="flex items-center space-x-2 shrink-0"
@@ -59,7 +57,6 @@ export function Navbar() {
           </Link>
          </div>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center text-white space-x-8">
             <Link
               href="/"
@@ -87,7 +84,6 @@ export function Navbar() {
             </Link>
           </nav>
 
-          {/* Icons */}
           <div className="flex items-center space-x-4">
             <button
               onClick={() => openCart()}
@@ -105,7 +101,6 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen ? (
           <motion.div
