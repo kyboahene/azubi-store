@@ -1,78 +1,55 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { Trash2, Plus, Minus } from "lucide-react";
 
 import { Button } from "@/modules/shared/button";
 
-import type { CartItem } from "@/lib/types";
 import { useCart } from "@/lib/hooks/use-cart";
 import { formatPrice } from "@/lib/utils";
+import type { CartItem as ICartItem } from "@/lib/context";
 
 interface CartItemProps {
-  item: CartItem;
+  item: ICartItem;
   editable?: boolean;
 }
 
 export function CartItem({ item, editable = true }: CartItemProps) {
   const { removeFromCart, updateCartItem } = useCart();
   const [isUpdating, setIsUpdating] = useState(false);
-  
+
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity < 1 || newQuantity > 99) return;
     if (isUpdating) return;
-    
     setIsUpdating(true);
-    updateCartItem(item.id, newQuantity);
+    updateCartItem(String(item.id), newQuantity);
     setIsUpdating(false);
   };
-  
+
   const handleRemove = () => {
     if (isUpdating) return;
     setIsUpdating(true);
-    removeFromCart(item.id);
+    removeFromCart(String(item.id));
     setIsUpdating(false);
   };
-  
+
   const itemTotal = item.price * item.quantity;
-  const image = Array.isArray(item.image) ? item.image[0] : item.image;
-  
+
   return (
-    <div className={`flex gap-4 py-4 ${isUpdating ? 'opacity-60' : ''}`}>
+    <div className={`flex gap-4 py-4 items-center ${isUpdating ? 'opacity-60' : ''}`}>
       <div className="w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
-        <Link href={`/product/${item.id}`}>
-          <img 
-            src={image || "https://placehold.co/200x200?text=No+Image"} 
-            alt={item.name} 
-            className="w-full h-full object-cover"
-          />
-        </Link>
+        <img
+          src={item.image || "https://placehold.co/200x200?text=No+Image"}
+          alt={item.name}
+          className="w-full h-full object-cover"
+        />
       </div>
-      
-      <div className="flex-1 flex flex-col">
-        <div className="flex justify-between">
-          <Link 
-            href={`/product/${item.id}`}
-            className="font-medium hover:underline line-clamp-1"
-          >
-            {item.name}
-          </Link>
-          
-          <span className="font-medium">
-            {formatPrice(itemTotal)}
-          </span>
+      <div className="flex-1 flex flex-col justify-between h-full">
+        <div className="flex flex-col">
+          <span className="font-medium line-clamp-1">{item.name}</span>
+          <span className="font-medium">{formatPrice(item.price)}</span>
         </div>
-        
-        {item.variantId && (
-          <p className="text-sm text-muted-foreground mt-1">
-            {Object.entries(item.selectedOptions || {})
-              .map(([key, value]) => `${key}: ${value}`)
-              .join(", ")}
-          </p>
-        )}
-        
-        <div className="flex items-center justify-between mt-auto">
+        <div className="flex items-center justify-between mt-2">
           {editable ? (
             <div className="flex items-center">
               <Button
@@ -85,11 +62,9 @@ export function CartItem({ item, editable = true }: CartItemProps) {
                 <Minus size={14} />
                 <span className="sr-only">Decrease quantity</span>
               </Button>
-              
               <div className="h-8 px-3 flex items-center justify-center border-y border-input">
                 {item.quantity}
               </div>
-              
               <Button
                 variant="outline"
                 size="icon"
@@ -102,11 +77,8 @@ export function CartItem({ item, editable = true }: CartItemProps) {
               </Button>
             </div>
           ) : (
-            <div className="text-sm text-muted-foreground">
-              Qty: {item.quantity}
-            </div>
+            <div className="text-sm text-muted-foreground">Qty: {item.quantity}</div>
           )}
-          
           {editable && (
             <Button
               variant="ghost"
