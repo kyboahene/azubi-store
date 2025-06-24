@@ -18,10 +18,10 @@ interface CartDrawerProps {
 }
 
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
+  const router = useRouter();
   const { cart, subtotal, removeFromCart, updateCartItem, itemCount } =
     useCart();
   const [updatingItems, setUpdatingItems] = useState<Record<string, boolean>>({});
-  const router = useRouter();
 
   const handleQuantityChange = async (item: CartItem, newQuantity: number) => {
     if (newQuantity < 1 || newQuantity > 99) return;
