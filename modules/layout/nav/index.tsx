@@ -31,7 +31,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`z-50 w-full transition-all duration-300 border-b-[1px] border-white bg-transparent`}
+      className={`z-50 w-full transition-all duration-300 border-b border-white/30 bg-transparent`}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
