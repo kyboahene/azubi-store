@@ -48,8 +48,5 @@ This project is a fully functional, multi-page e-commerce website built with Nex
 - `public/` – Static assets (images, icons, etc)
 - `data.json` – Product data (add to project root if not present)
 
-## Customization
-- You may use any tools or frameworks to extend the project (e.g., state management, UI libraries, headless CMS).
-
 ## License
 This project is for educational and demonstration purposes.
