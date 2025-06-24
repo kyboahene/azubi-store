@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import { Minus, Plus } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import data from "@/lib/db/data.json";
 import { useCart } from "@/lib/hooks/use-cart";
@@ -18,6 +18,7 @@ import CategoriesSection from "@/modules/shared/categories";
 const ProductDetailPage = () => {
   const params = useParams();
   const slug = params?.slug as string;
+  const router = useRouter();
 
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
@@ -64,7 +65,8 @@ const ProductDetailPage = () => {
       <div className="w-5/6 mx-auto flex flex-col gap-24">
         <Button
           variant="ghost"
-          className="capitalize w-fit text-black hover:text-primary-100"
+          className="capitalize w-fit text-black hover:text-primary-100 hover:bg-white"
+          onClick={() => router.back()}
         >
           Go Back
         </Button>
