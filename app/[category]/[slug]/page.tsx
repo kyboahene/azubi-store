@@ -65,7 +65,7 @@ const ProductDetailPage = () => {
       </div>
 
       <div className="w-5/6 mx-auto flex flex-col gap-24">
-        <Button variant="ghost" className="capitalize w-fit text-black">
+        <Button variant="ghost" className="capitalize w-fit text-black hover:text-primary-100">
           Go Back
         </Button>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-32">
