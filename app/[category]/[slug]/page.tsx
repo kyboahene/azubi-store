@@ -52,10 +52,7 @@ const ProductDetailPage = () => {
       quantity,
     });
 
-    showSuccessMessage(
-      "",
-      `${product.name} has been added to your cart.`
-    );
+    showSuccessMessage("", `${product.name} has been added to your cart.`);
   };
 
   return (
@@ -65,7 +62,10 @@ const ProductDetailPage = () => {
       </div>
 
       <div className="w-5/6 mx-auto flex flex-col gap-24">
-        <Button variant="ghost" className="capitalize w-fit text-black hover:text-primary-100">
+        <Button
+          variant="ghost"
+          className="capitalize w-fit text-black hover:text-primary-100"
+        >
           Go Back
         </Button>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-32">
@@ -148,7 +148,7 @@ const ProductDetailPage = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex flex-col gap-8">
-            <div className="relative h-[calc(50%)] rounded-lg bg-secondary-100">
+            <div className="relative h-[calc(50%)] rounded-lg overflow-hidden bg-secondary-100">
               <Image
                 src={
                   product.gallery?.first?.desktop?.replace(
@@ -157,11 +157,11 @@ const ProductDetailPage = () => {
                   ) || "/headphone.svg"
                 }
                 alt={product.name}
-                className="object-contain"
+                className="object-cover"
                 fill
               />
             </div>
-            <div className="relative h-[calc(50%)] rounded-lg bg-secondary-100">
+            <div className="relative h-[calc(50%)] rounded-lg overflow-hidden bg-secondary-100">
               <Image
                 src={
                   product.gallery?.second?.desktop?.replace(
@@ -170,12 +170,12 @@ const ProductDetailPage = () => {
                   ) || "/headphone.svg"
                 }
                 alt={product.name}
-                className="object-contain"
+                className="object-cover"
                 fill
               />
             </div>
           </div>
-          <div className="relative h-[460px] w-full rounded-lg bg-secondary-100">
+          <div className="relative h-[460px] w-full rounded-lg overflow-hidden bg-secondary-100">
             <Image
               src={
                 product.gallery?.third?.desktop?.replace(
@@ -184,34 +184,37 @@ const ProductDetailPage = () => {
                 ) || "/headphone.svg"
               }
               alt={product.name}
-              className="object-contain"
+              className="object-cover"
               fill
             />
           </div>
         </div>
-        <div className="flex flex-col md:flex-row gap-8">
-          {product.others?.map((other, i) => (
-            <div
-              key={i}
-              className="flex flex-col justify-center items-center gap-10 w-full"
-            >
-              <div className="relative h-[350px] flex justify-center items-center w-full rounded-lg bg-secondary-100">
-                <div className="relative h-[380px] w-[200px]">
-                  <Image
-                    src={
-                      other.image?.desktop?.replace("./assets", "/assets") ||
-                      "/headphone.svg"
-                    }
-                    alt={other.name}
-                    className="object-contain"
-                    fill
-                  />
+        <div className="flex flex-col gap-12">
+          <h1 className="font-bold text-3xl text-center uppercase">You May Also Like</h1>
+          <div className="flex flex-col md:flex-row gap-8">
+            {product.others?.map((other, i) => (
+              <div
+                key={i}
+                className="flex flex-col justify-center items-center gap-10 w-full"
+              >
+                <div className="relative h-[350px] flex justify-center items-center w-full rounded-lg bg-secondary-100">
+                  <div className="relative h-[380px] w-[200px]">
+                    <Image
+                      src={
+                        other.image?.desktop?.replace("./assets", "/assets") ||
+                        "/headphone.svg"
+                      }
+                      alt={other.name}
+                      className="object-contain"
+                      fill
+                    />
+                  </div>
                 </div>
+                <p className="font-bold text-2xl">{other.name}</p>
+                <Button className="uppercase w-fit">See Product</Button>
               </div>
-              <p className="font-bold text-2xl">{other.name}</p>
-              <Button className="uppercase w-fit">See Product</Button>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
       <CategoriesSection />
