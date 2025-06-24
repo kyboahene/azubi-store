@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { ArrowLeft, CreditCard, Smartphone } from "lucide-react";
 import { useForm } from "react-hook-form";
 
@@ -10,12 +10,15 @@ import { Input } from "@/modules/shared/input";
 import { useCart } from "@/lib/hooks/use-cart";
 import Image from "next/image";
 import Footer from "@/modules/layout/footer";
+import { useRouter } from "next/navigation";
 
 const CheckoutPage = () => {
   const { cart: orderItems, subtotal } = useCart();
   const shipping = 50;
   const vat = Math.round(subtotal * 0.2);
   const total = subtotal + shipping + vat;
+  const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const {
     register,
@@ -30,9 +33,6 @@ const CheckoutPage = () => {
       zipCode: "",
       city: "",
       country: "",
-      cardNumber: "",
-      expiryDate: "",
-      cvc: "",
       eMoneyNumber: "",
       eMoneyPin: "",
     },
@@ -45,7 +45,6 @@ const CheckoutPage = () => {
   };
 
   if (showConfirmation) {
-    // Show only the first item, and a summary of the rest
     const firstItem = orderItems[0];
     const otherCount = orderItems.length - 1;
     const otherTotal = orderItems
@@ -155,314 +154,325 @@ const CheckoutPage = () => {
       <header className="bg-black text-white">
         <Navbar />
       </header>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
-        <button className="flex items-center text-gray-600 hover:bg-primary-100 mb-8 transition-colors duration-200">
+        <Button
+          variant="ghost"
+          className="capitalize w-fit text-black hover:text-primary-100 hover:bg-white"
+          onClick={() => router.back()}
+        >
           Go Back
-        </button>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 my-24">
+        </Button>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8 mb-24">
           {/* Checkout Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg p-6 md:p-8">
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
-                CHECKOUT
-              </h1>
-
-              <div className="space-y-12">
-                {/* Billing Details */}
-                <div>
-                  <h2 className="text-primary-100 uppercase text-sm font-medium tracking-wider mb-4">
-                    Billing Details
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">
-                        Name
-                      </label>
-                      <Input
-                        type="text"
-                        {...register("name", { required: "Name is required" })}
-                        placeholder="Alexei Ward"
-                        className={`w-full${
-                          errors.name
-                            ? " border-red-500 focus:border-red-500 focus:ring-red-500"
-                            : ""
-                        }`}
-                      />
-                      {errors.name && (
-                        <span className="text-red-500 text-xs">
-                          {errors.name.message as string}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">
-                        Email Address
-                      </label>
-                      <Input
-                        type="email"
-                        {...register("email", {
-                          required: "Email is required",
-                        })}
-                        placeholder="alexei@mail.com"
-                        className={`w-full${
-                          errors.email
-                            ? " border-red-500 focus:border-red-500 focus:ring-red-500"
-                            : ""
-                        }`}
-                      />
-                      {errors.email && (
-                        <span className="text-red-500 text-xs">
-                          {errors.email.message as string}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">
-                        Phone Number
-                      </label>
-                      <Input
-                        type="tel"
-                        {...register("phone", {
-                          required: "Phone number is required",
-                        })}
-                        placeholder="+1 202-555-0136"
-                        className={`w-full${
-                          errors.phone
-                            ? " border-red-500 focus:border-red-500 focus:ring-red-500"
-                            : ""
-                        }`}
-                      />
-                      {errors.phone && (
-                        <span className="text-red-500 text-xs">
-                          {errors.phone.message as string}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Shipping Info */}
-                <div>
-                  <h2 className="text-primary-100 uppercase text-sm font-medium tracking-wider mb-4">
-                    Shipping Info
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-900 mb-2">
-                        Address
-                      </label>
-                      <Input
-                        type="text"
-                        {...register("address", {
-                          required: "Address is required",
-                        })}
-                        placeholder="1137 Williams Avenue"
-                        className={`w-full${
-                          errors.address
-                            ? " border-red-500 focus:border-red-500 focus:ring-red-500"
-                            : ""
-                        }`}
-                      />
-                      {errors.address && (
-                        <span className="text-red-500 text-xs">
-                          {errors.address.message as string}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">
-                        ZIP Code
-                      </label>
-                      <Input
-                        type="text"
-                        {...register("zipCode", {
-                          required: "ZIP code is required",
-                        })}
-                        placeholder="10001"
-                        className={`w-full${
-                          errors.zipCode
-                            ? " border-red-500 focus:border-red-500 focus:ring-red-500"
-                            : ""
-                        }`}
-                      />
-                      {errors.zipCode && (
-                        <span className="text-red-500 text-xs">
-                          {errors.zipCode.message as string}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">
-                        City
-                      </label>
-                      <Input
-                        type="text"
-                        {...register("city", { required: "City is required" })}
-                        placeholder="New York"
-                        className={`w-full${
-                          errors.city
-                            ? " border-red-500 focus:border-red-500 focus:ring-red-500"
-                            : ""
-                        }`}
-                      />
-                      {errors.city && (
-                        <span className="text-red-500 text-xs">
-                          {errors.city.message as string}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 mb-2">
-                        Country
-                      </label>
-                      <Input
-                        type="text"
-                        {...register("country", {
-                          required: "Country is required",
-                        })}
-                        placeholder="United States"
-                        className={`w-full${
-                          errors.country
-                            ? " border-red-500 focus:border-red-500 focus:ring-red-500"
-                            : ""
-                        }`}
-                      />
-                      {errors.country && (
-                        <span className="text-red-500 text-xs">
-                          {errors.country.message as string}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment Details */}
-                <div>
-                  <h2 className="text-primary-100 uppercase text-sm font-medium tracking-wider mb-4">
-                    Payment Details
-                  </h2>
-                  <div className="space-y-4">
+            <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
+              <div className="bg-white rounded-lg p-6 md:p-8">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
+                  CHECKOUT
+                </h1>
+                <div className="space-y-12">
+                  {/* Billing Details */}
+                  <div>
+                    <h2 className="text-primary-100 uppercase text-sm font-medium tracking-wider mb-4">
+                      Billing Details
+                    </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <label className="block text-sm font-medium text-gray-900 mb-3">
-                        Payment Method
-                      </label>
-                      <div className="space-y-3">
-                        <label
-                          className={`flex items-center p-4 border rounded-lg cursor-pointer border-gray-400 hover:border-primary-100 transition-colors duration-200", paymentMethod === "cash" ? "border-primary-100" : ""`}
-                        >
-                          <input
-                            type="radio"
-                            name="paymentMethod"
-                            value="emoney"
-                            checked={paymentMethod === "emoney"}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
-                            className="text-primary-100 focus:ring-primary-100 accent-primary-100"
-                          />
-                          <Smartphone className="w-5 h-5 ml-3 mr-2 text-gray-600" />
-                          <span className="text-sm font-medium">e-Money</span>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-900 mb-2">
+                          Name
                         </label>
-                        <label
-                          className={
-                            "flex items-center p-4 border rounded-lg cursor-pointer border-gray-400 hover:border-primary-100 transition-colors duration-200"
-                          }
-                        >
-                          <input
-                            type="radio"
-                            name="paymentMethod"
-                            value="cash"
-                            checked={paymentMethod === "cash"}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
-                            className="text-primary-100 focus:ring-primary-100 accent-primary-100"
-                          />
-                          <CreditCard className="w-5 h-5 ml-3 mr-2 text-gray-600" />
-                          <span className="text-sm font-medium">
-                            Cash on Delivery
+                        <Input
+                          type="text"
+                          {...register("name", {
+                            required: "Name is required",
+                          })}
+                          placeholder="Alexei Ward"
+                          className={`w-full${
+                            errors.name
+                              ? " border-red-500 focus:border-red-500 focus:ring-red-500"
+                              : ""
+                          }`}
+                        />
+                        {errors.name && (
+                          <span className="text-red-500 text-xs">
+                            {errors.name.message as string}
                           </span>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-900 mb-2">
+                          Email Address
                         </label>
+                        <Input
+                          type="email"
+                          {...register("email", {
+                            required: "Email is required",
+                          })}
+                          placeholder="alexei@mail.com"
+                          className={`w-full${
+                            errors.email
+                              ? " border-red-500 focus:border-red-500 focus:ring-red-500"
+                              : ""
+                          }`}
+                        />
+                        {errors.email && (
+                          <span className="text-red-500 text-xs">
+                            {errors.email.message as string}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-900 mb-2">
+                          Phone Number
+                        </label>
+                        <Input
+                          type="tel"
+                          {...register("phone", {
+                            required: "Phone number is required",
+                          })}
+                          placeholder="+1 202-555-0136"
+                          className={`w-full${
+                            errors.phone
+                              ? " border-red-500 focus:border-red-500 focus:ring-red-500"
+                              : ""
+                          }`}
+                        />
+                        {errors.phone && (
+                          <span className="text-red-500 text-xs">
+                            {errors.phone.message as string}
+                          </span>
+                        )}
                       </div>
                     </div>
+                  </div>
 
-                    {paymentMethod === "cash" && (
-                      <div className="flex items-center gap-4">
-                        <div className="relative h-32 w-16">
-                          <Image
-                            src="/cash-on-delivery.svg"
-                            alt="Cash on Delivery"
-                            className="object-contain"
-                            fill
-                          />
-                        </div>
-                        <p className="font-medium text-[15px] text-gray-400">
-                          The (Cash on Delivery) option enables you to pay in
-                          cash when our delivery courier arrives at your
-                          residence. Just make sure your address is correct so
-                          that your order will not be cancelled.
-                        </p>
+                  {/* Shipping Info */}
+                  <div>
+                    <h2 className="text-primary-100 uppercase text-sm font-medium tracking-wider mb-4">
+                      Shipping Info
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-900 mb-2">
+                          Address
+                        </label>
+                        <Input
+                          type="text"
+                          {...register("address", {
+                            required: "Address is required",
+                          })}
+                          placeholder="1137 Williams Avenue"
+                          className={`w-full${
+                            errors.address
+                              ? " border-red-500 focus:border-red-500 focus:ring-red-500"
+                              : ""
+                          }`}
+                        />
+                        {errors.address && (
+                          <span className="text-red-500 text-xs">
+                            {errors.address.message as string}
+                          </span>
+                        )}
                       </div>
-                    )}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-900 mb-2">
+                          ZIP Code
+                        </label>
+                        <Input
+                          type="text"
+                          {...register("zipCode", {
+                            required: "ZIP code is required",
+                          })}
+                          placeholder="10001"
+                          className={`w-full${
+                            errors.zipCode
+                              ? " border-red-500 focus:border-red-500 focus:ring-red-500"
+                              : ""
+                          }`}
+                        />
+                        {errors.zipCode && (
+                          <span className="text-red-500 text-xs">
+                            {errors.zipCode.message as string}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-900 mb-2">
+                          City
+                        </label>
+                        <Input
+                          type="text"
+                          {...register("city", {
+                            required: "City is required",
+                          })}
+                          placeholder="New York"
+                          className={`w-full${
+                            errors.city
+                              ? " border-red-500 focus:border-red-500 focus:ring-red-500"
+                              : ""
+                          }`}
+                        />
+                        {errors.city && (
+                          <span className="text-red-500 text-xs">
+                            {errors.city.message as string}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-900 mb-2">
+                          Country
+                        </label>
+                        <Input
+                          type="text"
+                          {...register("country", {
+                            required: "Country is required",
+                          })}
+                          placeholder="United States"
+                          className={`w-full${
+                            errors.country
+                              ? " border-red-500 focus:border-red-500 focus:ring-red-500"
+                              : ""
+                          }`}
+                        />
+                        {errors.country && (
+                          <span className="text-red-500 text-xs">
+                            {errors.country.message as string}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
 
-                    {paymentMethod === "emoney" && (
+                  {/* Payment Details */}
+                  <div>
+                    <h2 className="text-primary-100 uppercase text-sm font-medium tracking-wider mb-4">
+                      Payment Details
+                    </h2>
+                    <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-900 mb-2">
-                            e-Money Number
-                          </label>
-                          <Input
-                            type="text"
-                            {...register("eMoneyNumber", {
-                              required: "e-Money number is required",
-                            })}
-                            placeholder="238521993"
-                            className={`w-full${
-                              errors.eMoneyNumber
-                                ? " border-red-500 focus:border-red-500 focus:ring-red-500"
-                                : ""
+                        <label className="block text-sm font-medium text-gray-900 mb-3">
+                          Payment Method
+                        </label>
+                        <div className="space-y-3">
+                          <label
+                            className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors duration-200 ${
+                              paymentMethod === "emoney"
+                                ? "border-primary-100"
+                                : "border-gray-400 hover:border-primary-100"
                             }`}
-                          />
-                          {errors.eMoneyNumber && (
-                            <span className="text-red-500 text-xs">
-                              {errors.eMoneyNumber.message as string}
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-900 mb-2">
-                            e-Money PIN
+                          >
+                            <input
+                              type="radio"
+                              name="paymentMethod"
+                              value="emoney"
+                              checked={paymentMethod === "emoney"}
+                              onChange={(e) => setPaymentMethod(e.target.value)}
+                              className="text-primary-100 focus:ring-primary-100 accent-primary-100"
+                            />
+                            <Smartphone className="w-5 h-5 ml-3 mr-2 text-gray-600" />
+                            <span className="text-sm font-medium">e-Money</span>
                           </label>
-                          <Input
-                            type="text"
-                            {...register("eMoneyPin", {
-                              required: "e-Money PIN is required",
-                            })}
-                            placeholder="6891"
-                            className={`w-full${
-                              errors.eMoneyPin
-                                ? " border-red-500 focus:border-red-500 focus:ring-red-500"
-                                : ""
+                          <label
+                            className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors duration-200 ${
+                              paymentMethod === "cash"
+                                ? "border-primary-100"
+                                : "border-gray-400 hover:border-primary-100"
                             }`}
-                          />
-                          {errors.eMoneyPin && (
-                            <span className="text-red-500 text-xs">
-                              {errors.eMoneyPin.message as string}
+                          >
+                            <input
+                              type="radio"
+                              name="paymentMethod"
+                              value="cash"
+                              checked={paymentMethod === "cash"}
+                              onChange={(e) => setPaymentMethod(e.target.value)}
+                              className="text-primary-100 focus:ring-primary-100 accent-primary-100"
+                            />
+                            <CreditCard className="w-5 h-5 ml-3 mr-2 text-gray-600" />
+                            <span className="text-sm font-medium">
+                              Cash on Delivery
                             </span>
-                          )}
+                          </label>
                         </div>
                       </div>
-                    )}
+
+                      {paymentMethod === "cash" && (
+                        <div className="flex items-center gap-4">
+                          <div className="relative h-32 w-16">
+                            <Image
+                              src="/cash-on-delivery.svg"
+                              alt="Cash on Delivery"
+                              className="object-contain"
+                              fill
+                            />
+                          </div>
+                          <p className="font-medium text-[15px] text-gray-400">
+                            The (Cash on Delivery) option enables you to pay in
+                            cash when our delivery courier arrives at your
+                            residence. Just make sure your address is correct so
+                            that your order will not be cancelled.
+                          </p>
+                        </div>
+                      )}
+
+                      {paymentMethod === "emoney" && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                              e-Money Number
+                            </label>
+                            <Input
+                              type="text"
+                              {...register("eMoneyNumber", {
+                                required: "e-Money number is required",
+                              })}
+                              placeholder="238521993"
+                              className={`w-full${
+                                errors.eMoneyNumber
+                                  ? " border-red-500 focus:border-red-500 focus:ring-red-500"
+                                  : ""
+                              }`}
+                            />
+                            {errors.eMoneyNumber && (
+                              <span className="text-red-500 text-xs">
+                                {errors.eMoneyNumber.message as string}
+                              </span>
+                            )}
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-900 mb-2">
+                              e-Money PIN
+                            </label>
+                            <Input
+                              type="text"
+                              {...register("eMoneyPin", {
+                                required: "e-Money PIN is required",
+                              })}
+                              placeholder="6891"
+                              className={`w-full${
+                                errors.eMoneyPin
+                                  ? " border-red-500 focus:border-red-500 focus:ring-red-500"
+                                  : ""
+                              }`}
+                            />
+                            {errors.eMoneyPin && (
+                              <span className="text-red-500 text-xs">
+                                {errors.eMoneyPin.message as string}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
-
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg p-6 md:p-8 sticky top-8">
               <h2 className="text-xl font-bold text-gray-900 mb-6">SUMMARY</h2>
-
               <div className="space-y-4 mb-6">
                 {orderItems.map((item) => (
                   <div
@@ -488,7 +498,6 @@ const CheckoutPage = () => {
                   </div>
                 ))}
               </div>
-
               <div className="space-y-2 pt-4 border-t border-gray-200">
                 <div className="flex justify-between">
                   <span className="text-gray-600">TOTAL</span>
@@ -511,13 +520,17 @@ const CheckoutPage = () => {
                   </span>
                 </div>
               </div>
-
-              <Button className="uppercase w-full mt-4">Continue & Pay</Button>
+              <Button
+                className="uppercase w-full mt-4"
+                type="button"
+                onClick={() => formRef.current?.requestSubmit()}
+              >
+                Continue & Pay
+              </Button>
             </div>
           </div>
         </div>
       </div>
-
       <Footer />
     </main>
   );
