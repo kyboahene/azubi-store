@@ -26,11 +26,13 @@ const CategoryPage = () => {
 
   return (
     <main className="min-h-screen flex flex-col gap-8">
-      <div className="bg-black h-[30vh] text-white rounded overflow-hidden">
-        <div className="w-5/6 mx-auto h-full">
+      <div className="bg-black h-[30vh] text-white rounded overflow-hidden flex items-center justify-center">
+        <div className="w-5/6 mx-auto h-full flex flex-col items-center justify-center">
           <Navbar />
           <div className="h-full flex justify-center items-center">
-            <h1 className="text-[40px] font-bold uppercase">{category}</h1>
+            <h1 className="text-[40px] font-bold uppercase text-center">
+              {category}
+            </h1>
           </div>
         </div>
       </div>
