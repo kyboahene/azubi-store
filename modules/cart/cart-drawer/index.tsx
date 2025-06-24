@@ -68,112 +68,77 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           height: "60vh",
         }}
       >
-        <SheetHeader className="px-4 py-4 border-b border-gray-200 text-left flex items-center justify-evenly">
-          <div className="flex items-center">
-            <SheetTitle className="flex items-center">
-              Your Cart
-              <span className="ml-2 text-sm font-normal text-gray-500">
-                ({itemCount} {itemCount === 1 ? "item" : "items"})
-              </span>
-            </SheetTitle>
-          </div>
-          {cart.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs text-gray-500 hover:text-red-600"
-              onClick={() => cart.forEach((item) => removeFromCart(String(item.id)))}
-            >
-              Remove All
-            </Button>
-          )}
-        </SheetHeader>
-
-        <div className="flex-grow overflow-y-auto py-4 px-4">
-          {itemCount === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <ShoppingBag className="h-16 w-16 text-gray-300 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-1">
-                Your cart is empty
-              </h3>
-              <p className="text-gray-500 mb-6">
-                Looks like you haven't added any products yet.
-              </p>
-              <Button variant="default" onClick={onClose}>
-                Continue Shopping
-              </Button>
-            </div>
-          ) : (
-            <ul className="divide-y divide-gray-200">
-              {cart.map((item) => (
-                <li
-                  key={item.id}
-                  className={`py-5 flex items-center gap-4 ${
-                    updatingItems[item.id]
-                      ? "opacity-50 pointer-events-none"
-                      : ""
-                  }`}
-                >
-                  <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="h-full w-full object-cover object-center"
-                    />
-                  </div>
-                  <div className="flex-1 flex flex-row items-center justify-between">
-                    <div className="flex flex-col justify-center">
-                      <span className="font-medium text-gray-900">
-                        {item.name}
-                      </span>
-                      <span className="text-gray-500">
-                        ${item.price.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="flex items-center bg-secondary-100">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() =>
-                          handleQuantityChange(item, item.quantity - 1)
-                        }
-                        className="hover:bg-secondary-100"
-                        disabled={item.quantity <= 1 || updatingItems[item.id]}
-                        aria-label="Decrease quantity"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="w-12 text-center">{item.quantity}</span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() =>
-                          handleQuantityChange(item, item.quantity + 1)
-                        }
-                        className="hover:bg-secondary-100"
-                        disabled={item.quantity >= 99 || updatingItems[item.id]}
-                        aria-label="Increase quantity"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 border">
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-gray-900">
+            CART ({itemCount})
+          </h3>
+          <button
+            onClick={() =>
+              cart.forEach((item) => removeFromCart(String(item.id)))
+            }
+            className="text-gray-500 hover:text-gray-700 text-sm underline"
+          >
+            Remove all
+          </button>
         </div>
 
-        {cart.length > 0 && (
-          <div className="border-t border-gray-200 px-4 py-5 mt-auto">
-            <div className="flex justify-between text-base font-medium text-gray-900 mb-4">
-              <p>Total</p>
-              <p>${subtotal.toLocaleString()}</p>
+        {cart.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">Your cart is empty</p>
+        ) : (
+          <>
+            <div className="space-y-4 mb-6">
+              {cart.map((item) => (
+                <div key={item.id} className="flex items-center space-x-4">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-16 h-16 rounded object-cover"
+                  />
+                  <div className="flex-1">
+                    <h4 className="font-medium text-gray-900">{item.name}</h4>
+                    <p className="text-gray-600">
+                      $ {item.price.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(item, item.quantity - 1)
+                      }
+                      className="w-8 h-8 bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600"
+                    >
+                      -
+                    </button>
+                    <span className="w-8 text-center">{item.quantity}</span>
+                    <button
+                      onClick={() =>
+                        handleQuantityChange(item, item.quantity + 1)
+                      }
+                      className="w-8 h-8 bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-            <Button className="w-full mt-4">Checkout</Button>
-          </div>
+
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-gray-600">TOTAL</span>
+              <span className="font-bold text-lg">
+                $ {subtotal.toLocaleString()}
+              </span>
+            </div>
+
+            <Button className="w-full">Checkout</Button>
+          </>
         )}
+      </div>
+    </div>
       </SheetContent>
     </Sheet>
+   
   );
 }
